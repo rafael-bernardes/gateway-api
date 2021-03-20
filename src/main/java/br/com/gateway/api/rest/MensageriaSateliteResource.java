@@ -9,9 +9,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status.Family;
@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response.Status.Family;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 
+import br.com.gateway.api.util.AutenticacaoUtil;
 import br.com.gateway.api.util.PropertiesUtil;
 
 @Path("mensageria-satelite")
@@ -33,36 +34,44 @@ public class MensageriaSateliteResource implements Serializable {
 	ResteasyClient client = new ResteasyClientBuilder().build();
 	
 	@GET
-	public Response get() throws IllegalArgumentException, NullPointerException, IOException {
-		WebTarget target = client.target(PropertiesUtil.obterURI("mensageria"));
+	public Response get(@QueryParam("nome-api") String nomeAPI) throws IllegalArgumentException, NullPointerException, IOException {
 		
-		Response response = target.request().get();
+		byte[] respostaServico = null;
 		
-		String resposta = "";
+		String resposta = AutenticacaoUtil.autenticar(nomeAPI);
 		
-		if(Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
-			resposta = response.readEntity(String.class);
+		if(resposta.contains("autenticado")) {
+			WebTarget target = client.target(PropertiesUtil.obterURI("mensageria-api")).path("message").path("dados-geograficos-satelite-atualizar").queryParam("type", "queue");
 			
-			System.out.println("mensageria-api.get: " + resposta);
+			Response response = target.request().header("Authorization", obterHeaderAutorizacao()).get();
+			
+			if(Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
+				respostaServico = response.readEntity(byte[].class);
+			}			
 		}
 		
-		return Response.ok().entity(resposta).build();
+		return Response.ok().entity(respostaServico).build();
 	}
 	
 	@POST
-	public Response post(byte[] mensagem) throws IllegalArgumentException, NullPointerException, IOException {
-		WebTarget target = client.target(PropertiesUtil.obterURI("mensageria-api")).path("message").path("dados-geograficos-satelite-atualizar").queryParam("type", "queue");
+	public Response post(byte[] mensagem, @QueryParam("nome-api") String nomeAPI) throws IllegalArgumentException, NullPointerException, IOException {
 		
-		Response response = target.request().header("Authorization", obterHeaderAutorizacao()).buildPost(Entity.entity(mensagem, MediaType.APPLICATION_JSON)).invoke();
+		String resposta = AutenticacaoUtil.autenticar(nomeAPI);
 		
-		String resposta = "";
-		
-		if(Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
-			resposta = response.readEntity(String.class);
+		if(resposta.contains("autenticado")) {
+			WebTarget target = client.target(PropertiesUtil.obterURI("mensageria-api")).path("message").path("dados-geograficos-satelite-atualizar").queryParam("type", "queue");
 			
-			System.out.println("mensageria-api.post: " + resposta);
-		}else {
-			System.out.println("Resposta do ActiveMQ na criação de mensagem: " + response.getStatus());
+			Response response = target.request().header("Authorization", obterHeaderAutorizacao()).buildPost(Entity.entity(mensagem, MediaType.APPLICATION_JSON)).invoke();
+			
+			resposta = "";
+			
+			if(Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
+				resposta = response.readEntity(String.class);
+				
+				System.out.println("mensageria-api.post: " + resposta);
+			}else {
+				System.out.println("Resposta do ActiveMQ na criação de mensagem: " + response.getStatus());
+			}			
 		}
 		
 		return Response.ok().entity(resposta).build();

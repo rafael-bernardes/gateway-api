@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response.Status.Family;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 
+import br.com.gateway.api.util.AutenticacaoUtil;
 import br.com.gateway.api.util.PropertiesUtil;
 
 @Path("dados-geograficos-ibge")
@@ -39,25 +40,7 @@ public class IbgeResource implements Serializable {
 		Response response;
 		
 		try {
-			target = client.target(PropertiesUtil.obterURI("autenticacao-api")).path("autenticacao");
-			target = target.queryParam("nome-api", nomeAPI);
-			
-			response = target.request().get();
-			
-			String resposta = "";
-			
-			if(Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
-				resposta = response.readEntity(String.class);
-			}else {
-				StringBuilder mensagemErro = new StringBuilder();
-				
-				mensagemErro.append("Erro ao autenticar API ");
-				mensagemErro.append(nomeAPI);
-				mensagemErro.append(". Resposta do serviço: ");
-				mensagemErro.append(response.getStatus());
-				
-				System.out.println(mensagemErro.toString());
-			}
+			String resposta = AutenticacaoUtil.autenticar(nomeAPI);
 			
 			if(resposta.contains("autenticado")) {
 				target = client.target(PropertiesUtil.obterURI("ibge-api"));
