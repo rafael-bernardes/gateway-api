@@ -11,7 +11,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status.Family;
@@ -34,16 +33,14 @@ public class MensageriaIbgeResource implements Serializable {
 	
 	@GET
 	public Response get() throws IllegalArgumentException, NullPointerException, IOException {
-		WebTarget target = client.target(PropertiesUtil.obterURI("mensageria"));
+		WebTarget target = client.target(PropertiesUtil.obterURI("mensageria-api")).path("message").path("dados-geograficos-ibge-atualizar").queryParam("type", "queue");
 		
-		Response response = target.request().get();
+		Response response = target.request().header("Authorization", obterHeaderAutorizacao()).get();
 		
 		String resposta = "";
 		
 		if(Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
 			resposta = response.readEntity(String.class);
-			
-			System.out.println("mensageria-api.get: " + resposta);
 		}
 		
 		return Response.ok().entity(resposta).build();
