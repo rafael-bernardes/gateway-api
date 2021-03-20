@@ -37,8 +37,6 @@ public class SateliteResource implements Serializable {
 		
 		if(Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
 			resposta = response.readEntity(String.class);
-			
-			System.out.println("satelite-api: " + resposta);
 		}
 		
 		return Response.ok().entity(resposta).build();
