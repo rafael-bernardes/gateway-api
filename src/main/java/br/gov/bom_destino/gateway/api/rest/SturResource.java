@@ -1,4 +1,4 @@
-package br.com.gateway.api.rest;
+package br.gov.bom_destino.gateway.api.rest;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -19,8 +19,8 @@ import javax.ws.rs.core.Response.Status.Family;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 
-import br.com.gateway.api.util.AutenticacaoUtil;
-import br.com.gateway.api.util.PropertiesUtil;
+import br.gov.bom_destino.gateway.api.util.AutenticacaoUtil;
+import br.gov.bom_destino.gateway.api.util.PropertiesUtil;
 
 @Path("dados-geograficos-stur")
 @Consumes(MediaType.APPLICATION_JSON)

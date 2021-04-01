@@ -1,4 +1,4 @@
-package br.com.gateway.api.rest;
+package br.gov.bom_destino.gateway.api.rest;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -19,13 +19,13 @@ import javax.ws.rs.core.Response.Status.Family;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 
-import br.com.gateway.api.util.AutenticacaoUtil;
-import br.com.gateway.api.util.PropertiesUtil;
+import br.gov.bom_destino.gateway.api.util.AutenticacaoUtil;
+import br.gov.bom_destino.gateway.api.util.PropertiesUtil;
 
-@Path("mensageria-satelite")
+@Path("mensageria-ibge")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class MensageriaSateliteResource implements Serializable {
+public class MensageriaIbgeResource implements Serializable {
 	/**
 	 * 
 	 */
@@ -35,31 +35,29 @@ public class MensageriaSateliteResource implements Serializable {
 	
 	@GET
 	public Response get(@QueryParam("nome-cliente") String nomeAPI) throws IllegalArgumentException, NullPointerException, IOException {
-		
-		byte[] respostaServico = null;
-		
 		String resposta = AutenticacaoUtil.autenticar(nomeAPI);
 		
 		if(resposta.contains("autenticado")) {
-			WebTarget target = client.target(PropertiesUtil.obterURI("mensageria-api")).path("message").path("dados-geograficos-satelite-atualizar").queryParam("type", "queue");
+			WebTarget target = client.target(PropertiesUtil.obterURI("mensageria-api")).path("message").path("dados-geograficos-ibge-atualizar").queryParam("type", "queue");
 			
 			Response response = target.request().header("Authorization", obterHeaderAutorizacao()).get();
 			
 			if(Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
-				respostaServico = response.readEntity(byte[].class);
-			}			
+				resposta = response.readEntity(String.class);
+			}else {
+				resposta = "Falha ao obter mensagem de atualização de dados provenientes do IBGE";
+			}
 		}
 		
-		return Response.ok().entity(respostaServico).build();
+		return Response.ok().entity(resposta).build();
 	}
 	
 	@POST
-	public Response post(byte[] mensagem, @QueryParam("nome-cliente") String nomeAPI) throws IllegalArgumentException, NullPointerException, IOException {
-		
+	public Response post(String mensagem, @QueryParam("nome-cliente") String nomeAPI) throws IllegalArgumentException, NullPointerException, IOException {
 		String resposta = AutenticacaoUtil.autenticar(nomeAPI);
 		
 		if(resposta.contains("autenticado")) {
-			WebTarget target = client.target(PropertiesUtil.obterURI("mensageria-api")).path("message").path("dados-geograficos-satelite-atualizar").queryParam("type", "queue");
+			WebTarget target = client.target(PropertiesUtil.obterURI("mensageria-api")).path("message").path("dados-geograficos-ibge-atualizar").queryParam("type", "queue");
 			
 			Response response = target.request().header("Authorization", obterHeaderAutorizacao()).buildPost(Entity.entity(mensagem, MediaType.APPLICATION_JSON)).invoke();
 			

@@ -1,4 +1,4 @@
-package br.com.gateway.api.filters;
+package br.gov.bom_destino.gateway.api.filters;
 
 import java.io.IOException;
 
