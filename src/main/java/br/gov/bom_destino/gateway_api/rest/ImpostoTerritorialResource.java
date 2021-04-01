@@ -1,4 +1,4 @@
-package br.gov.bom_destino.gateway.api.rest;
+package br.gov.bom_destino.gateway_api.rest;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response.Status.Family;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 
-import br.gov.bom_destino.gateway.api.util.PropertiesUtil;
+import br.gov.bom_destino.gateway_api.util.PropertiesUtil;
 
 @Path("espelhos")
 @Consumes(MediaType.APPLICATION_JSON)

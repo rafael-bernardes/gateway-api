@@ -1,4 +1,4 @@
-package br.gov.bom_destino.gateway.api.util;
+package br.gov.bom_destino.gateway_api.util;
 
 import java.io.File;
 import java.io.FileInputStream;
