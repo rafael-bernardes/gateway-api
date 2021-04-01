@@ -34,7 +34,7 @@ public class MensageriaIbgeResource implements Serializable {
 	ResteasyClient client = new ResteasyClientBuilder().build();
 	
 	@GET
-	public Response get(@QueryParam("nome-api") String nomeAPI) throws IllegalArgumentException, NullPointerException, IOException {
+	public Response get(@QueryParam("nome-cliente") String nomeAPI) throws IllegalArgumentException, NullPointerException, IOException {
 		String resposta = AutenticacaoUtil.autenticar(nomeAPI);
 		
 		if(resposta.contains("autenticado")) {
@@ -53,7 +53,7 @@ public class MensageriaIbgeResource implements Serializable {
 	}
 	
 	@POST
-	public Response post(String mensagem, @QueryParam("nome-api") String nomeAPI) throws IllegalArgumentException, NullPointerException, IOException {
+	public Response post(String mensagem, @QueryParam("nome-cliente") String nomeAPI) throws IllegalArgumentException, NullPointerException, IOException {
 		String resposta = AutenticacaoUtil.autenticar(nomeAPI);
 		
 		if(resposta.contains("autenticado")) {

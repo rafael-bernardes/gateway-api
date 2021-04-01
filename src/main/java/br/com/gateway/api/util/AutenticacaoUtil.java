@@ -18,7 +18,7 @@ public class AutenticacaoUtil {
 		Response response;
 		
 		target = client.target(PropertiesUtil.obterURI("autenticacao-api")).path("autenticacao");
-		target = target.queryParam("nome-api", nomeAPI);
+		target = target.queryParam("nome-cliente", nomeAPI);
 		
 		response = target.request().get();
 		

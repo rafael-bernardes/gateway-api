@@ -32,7 +32,7 @@ public class IbgeResource implements Serializable {
 	ResteasyClient client = new ResteasyClientBuilder().build();
 	
 	@GET
-	public Response get(@QueryParam("nome-cidade") String nomeCidade, @QueryParam("nome-api") String nomeAPI) {
+	public Response get(@QueryParam("nome-cidade") String nomeCidade, @QueryParam("nome-cliente") String nomeAPI) {
 		client = new ResteasyClientBuilder().build();
 		
 		WebTarget target;

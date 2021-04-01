@@ -30,7 +30,7 @@ public class SateliteResource implements Serializable {
 	ResteasyClient client = new ResteasyClientBuilder().build();
 	
 	@GET
-	public Response get(@QueryParam("nome-api") String nomeAPI) throws IOException {
+	public Response get(@QueryParam("nome-cliente") String nomeAPI) throws IOException {
 		
 		String resposta = AutenticacaoUtil.autenticar(nomeAPI);
 		

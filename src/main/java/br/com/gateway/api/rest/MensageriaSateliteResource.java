@@ -34,7 +34,7 @@ public class MensageriaSateliteResource implements Serializable {
 	ResteasyClient client = new ResteasyClientBuilder().build();
 	
 	@GET
-	public Response get(@QueryParam("nome-api") String nomeAPI) throws IllegalArgumentException, NullPointerException, IOException {
+	public Response get(@QueryParam("nome-cliente") String nomeAPI) throws IllegalArgumentException, NullPointerException, IOException {
 		
 		byte[] respostaServico = null;
 		
@@ -54,7 +54,7 @@ public class MensageriaSateliteResource implements Serializable {
 	}
 	
 	@POST
-	public Response post(byte[] mensagem, @QueryParam("nome-api") String nomeAPI) throws IllegalArgumentException, NullPointerException, IOException {
+	public Response post(byte[] mensagem, @QueryParam("nome-cliente") String nomeAPI) throws IllegalArgumentException, NullPointerException, IOException {
 		
 		String resposta = AutenticacaoUtil.autenticar(nomeAPI);
 		
