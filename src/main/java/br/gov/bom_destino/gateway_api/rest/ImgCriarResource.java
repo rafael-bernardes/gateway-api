@@ -19,7 +19,6 @@ import javax.ws.rs.core.Response.Status.Family;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 
-import br.gov.bom_destino.gateway_api.util.AutenticacaoUtil;
 import br.gov.bom_destino.gateway_api.util.PropertiesUtil;
 
 @Path("dados-geograficos")
@@ -50,26 +49,24 @@ public class ImgCriarResource implements Serializable {
 		parametros.append(IMG_CRIAR_API);
 		
 		try {
-			String resposta = AutenticacaoUtil.autenticar(nomeApi);
-			
-			if(resposta.contains("autenticado")) {
-				target = client.target(PropertiesUtil.obterURI(IMG_CRIAR_API)).path("dados-geograficos");
-				
-				response = target.request().post(Entity.entity(parametros.toString(), MediaType.APPLICATION_JSON));
-				
-				if(Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
-					resposta = response.readEntity(String.class);
-				}else {
-					StringBuilder mensagemErro = new StringBuilder();
-					
-					mensagemErro.append("Erro ao atualizar dados geográficos");
-					mensagemErro.append(". Resposta do serviço: ");
-					mensagemErro.append(response.getStatus());
-					
-					System.out.println(mensagemErro.toString());
-				}
+			String resposta = "";
+
+			target = client.target(PropertiesUtil.obterURI(IMG_CRIAR_API)).path("dados-geograficos");
+
+			response = target.request().post(Entity.entity(parametros.toString(), MediaType.APPLICATION_JSON));
+
+			if(Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
+				resposta = response.readEntity(String.class);
+			}else {
+				StringBuilder mensagemErro = new StringBuilder();
+
+				mensagemErro.append("Erro ao atualizar dados geográficos");
+				mensagemErro.append(". Resposta do serviço: ");
+				mensagemErro.append(response.getStatus());
+
+				System.out.println(mensagemErro.toString());
 			}
-			
+
 			return Response.ok().entity(resposta).build();
 		} catch (IllegalArgumentException e) {
 			imprimirErroConsole(e);

@@ -10,6 +10,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response.Status;
 
+import br.gov.bom_destino.gateway_api.util.AutenticacaoUtil;
+
 public class GatewayApiFilter implements Filter{
 
 	@Override
@@ -18,7 +20,11 @@ public class GatewayApiFilter implements Filter{
 		 String nomeCliente = arg0.getParameter("nome-cliente");
 		 
 		 if(nomeCliente != null && nomeCliente.length() > 0) {
-			 arg2.doFilter(arg0, arg1);
+			 String respostaAutenticacao = AutenticacaoUtil.autenticar(nomeCliente);
+			 
+			 if(respostaAutenticacao.contains("autenticado")) {
+				 arg2.doFilter(arg0, arg1);
+			 }
 		 }else {
 			 HttpServletResponse resp = (HttpServletResponse)arg1;
 			 

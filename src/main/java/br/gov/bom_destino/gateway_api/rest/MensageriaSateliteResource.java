@@ -19,7 +19,6 @@ import javax.ws.rs.core.Response.Status.Family;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 
-import br.gov.bom_destino.gateway_api.util.AutenticacaoUtil;
 import br.gov.bom_destino.gateway_api.util.PropertiesUtil;
 
 @Path("mensageria-satelite")
@@ -35,45 +34,41 @@ public class MensageriaSateliteResource implements Serializable {
 	
 	@GET
 	public Response get(@QueryParam("nome-cliente") String nomeAPI) throws IllegalArgumentException, NullPointerException, IOException {
-		
+
 		byte[] respostaServico = null;
-		
-		String resposta = AutenticacaoUtil.autenticar(nomeAPI);
-		
-		if(resposta.contains("autenticado")) {
-			WebTarget target = client.target(PropertiesUtil.obterURI("mensageria-api")).path("message").path("dados-geograficos-satelite-atualizar").queryParam("type", "queue");
-			
-			Response response = target.request().header("Authorization", obterHeaderAutorizacao()).get();
-			
-			if(Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
-				respostaServico = response.readEntity(byte[].class);
-			}			
-		}
-		
+
+		String resposta = "";
+
+		WebTarget target = client.target(PropertiesUtil.obterURI("mensageria-api")).path("message").path("dados-geograficos-satelite-atualizar").queryParam("type", "queue");
+
+		Response response = target.request().header("Authorization", obterHeaderAutorizacao()).get();
+
+		if(Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
+			respostaServico = response.readEntity(byte[].class);
+		}			
+
 		return Response.ok().entity(respostaServico).build();
 	}
 	
 	@POST
 	public Response post(byte[] mensagem, @QueryParam("nome-cliente") String nomeAPI) throws IllegalArgumentException, NullPointerException, IOException {
-		
-		String resposta = AutenticacaoUtil.autenticar(nomeAPI);
-		
-		if(resposta.contains("autenticado")) {
-			WebTarget target = client.target(PropertiesUtil.obterURI("mensageria-api")).path("message").path("dados-geograficos-satelite-atualizar").queryParam("type", "queue");
-			
-			Response response = target.request().header("Authorization", obterHeaderAutorizacao()).buildPost(Entity.entity(mensagem, MediaType.APPLICATION_JSON)).invoke();
-			
-			resposta = "";
-			
-			if(Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
-				resposta = response.readEntity(String.class);
-				
-				System.out.println("mensageria-api.post: " + resposta);
-			}else {
-				System.out.println("Resposta do ActiveMQ na criação de mensagem: " + response.getStatus());
-			}			
-		}
-		
+
+		String resposta = "";
+
+		WebTarget target = client.target(PropertiesUtil.obterURI("mensageria-api")).path("message").path("dados-geograficos-satelite-atualizar").queryParam("type", "queue");
+
+		Response response = target.request().header("Authorization", obterHeaderAutorizacao()).buildPost(Entity.entity(mensagem, MediaType.APPLICATION_JSON)).invoke();
+
+		resposta = "";
+
+		if(Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
+			resposta = response.readEntity(String.class);
+
+			System.out.println("mensageria-api.post: " + resposta);
+		}else {
+			System.out.println("Resposta do ActiveMQ na criação de mensagem: " + response.getStatus());
+		}			
+
 		return Response.ok().entity(resposta).build();
 	}
 

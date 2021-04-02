@@ -16,8 +16,6 @@ import javax.ws.rs.core.Response.Status.Family;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 
-import br.gov.bom_destino.gateway_api.util.AutenticacaoUtil;
-
 @Path("dados-geograficos-satelite")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -31,23 +29,21 @@ public class SateliteResource implements Serializable {
 	
 	@GET
 	public Response get(@QueryParam("nome-cliente") String nomeAPI) throws IOException {
-		
-		String resposta = AutenticacaoUtil.autenticar(nomeAPI);
-		
-		if(resposta.contains("autenticado")) {
-			client = new ResteasyClientBuilder().build();
-			
-			WebTarget target = client.target("http://localhost:8080/satelite-api").path("dados-geograficos");
-			
-			Response response = target.request().get();
-			
-			resposta = "";
-			
-			if(Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
-				resposta = response.readEntity(String.class);
-			}			
-		}
-		
+
+		String resposta = "";
+
+		client = new ResteasyClientBuilder().build();
+
+		WebTarget target = client.target("http://localhost:8080/satelite-api").path("dados-geograficos");
+
+		Response response = target.request().get();
+
+		resposta = "";
+
+		if(Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
+			resposta = response.readEntity(String.class);
+		}			
+
 		return Response.ok().entity(resposta).build();
 	}
 }

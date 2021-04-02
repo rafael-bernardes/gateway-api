@@ -11,14 +11,14 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 
 public class AutenticacaoUtil {
 	
-	public static String autenticar(String nomeAPI) throws IOException {
+	public static String autenticar(String nomeCliente) throws IOException {
 		ResteasyClient client = new ResteasyClientBuilder().build();
 		
 		WebTarget target;
 		Response response;
 		
 		target = client.target(PropertiesUtil.obterURI("autenticacao-api")).path("autenticacao");
-		target = target.queryParam("nome-cliente", nomeAPI);
+		target = target.queryParam("nome-cliente", nomeCliente);
 		
 		response = target.request().get();
 		
@@ -31,7 +31,7 @@ public class AutenticacaoUtil {
 			StringBuilder mensagemErro = new StringBuilder();
 			
 			mensagemErro.append("Erro ao autenticar API ");
-			mensagemErro.append(nomeAPI);
+			mensagemErro.append(nomeCliente);
 			mensagemErro.append(". Resposta do serviço: ");
 			mensagemErro.append(response.getStatus());
 			
