@@ -2,25 +2,33 @@ package br.gov.bom_destino.gateway_api.util;
 
 import java.io.IOException;
 
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status.Family;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 
+import br.gov.bom_destino.gateway_api.entities.Credencial;
+
 public class AutenticacaoUtil {
 	
 	public static String autenticar(String nomeCliente) throws IOException {
+		Credencial credencial = new Credencial();
+		
+		credencial.setNomeCliente(nomeCliente);
+		credencial.setToken("kdjkdfjsdfhskhf87678686");
+		
 		ResteasyClient client = new ResteasyClientBuilder().build();
 		
 		WebTarget target;
 		Response response;
 		
 		target = client.target(PropertiesUtil.obterURI("autenticacao-api")).path("autenticacao");
-		target = target.queryParam("nome-cliente", nomeCliente);
 		
-		response = target.request().get();
+		response = target.request().post(Entity.entity(credencial, MediaType.APPLICATION_JSON));
 		
 		String resposta = "";
 		

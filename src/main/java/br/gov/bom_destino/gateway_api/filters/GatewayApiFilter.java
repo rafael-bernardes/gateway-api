@@ -30,8 +30,5 @@ public class GatewayApiFilter implements Filter{
 			 
 			 resp.sendError(Status.UNAUTHORIZED.getStatusCode());
 		 }
-		
 	}
-
-}
-	
+}	
